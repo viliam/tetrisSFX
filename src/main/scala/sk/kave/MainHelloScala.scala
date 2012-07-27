@@ -1,8 +1,8 @@
 package sk.kave
 
-class MainHelloScala {
+object MainHelloScala {
 
   def main( args : Array[String]) {
-
+      println("Hello scala")
   }
 }
