@@ -1,9 +1,17 @@
 package sk.kave.tetris
 
-object Board {
+import sk.kave.tetris.Property._
 
-  val Width = 10
-  val Height = 40
+class Board {
 
+  val frozenItems = Array[ Array[Boolean]] (MaxX, MaxY)
+
+  def isFullRow( inxY : Int) : Boolean = {
+    val row = frozenItems(_)(inxY)
+    def searchRow( inxX : Int) : Boolean =
+       if (inxX >= row.length) true
+       else row( inxX) && searchRow(inxX + 1)
+    expect(4) { 4}
+  }
 
 }
