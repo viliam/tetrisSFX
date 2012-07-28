@@ -7,11 +7,11 @@ which don't have maven artifact today. To use it, you must add scalafx-1.0-SNAPS
 file manually to yours local repository, see:
 
 http://code.google.com/p/scalafx/issues/detail?id=4
-http://maven.apache.org/guides/mini/guide-3rd-party-jars-local.html
 
-mvn install:install-file -Dfile=scalafx-1.0-SNAPSHOT.jar -DgroupId=ScalaFX \
-    -DartifactId=scalafx -Dversion=1.0-SNAPSHOT -Dpackaging=scalafx
-
-I used this command:
-C:\$PROJECT_DIR$\tank>mvn install:install-file -Dfile=c:\$JAR_DIR$\scalafx.jar \
-    -DgroupId=ScalaFX  -Dpackaging=scalafx -DartifactId=scalafx -Dversion=1.0-SNAPSHOT
+mvn install:install-file -DartifactId=scalafx \
+  -DgroupId=org.scalafx \
+  -Dpackaging=jar \
+  -DpomFile=scalafx-1.0-SNAPSHOT.pom \
+  -Dfile=scalafx-1.0-SNAPSHOT.jar \
+  -Dversion=1.0-SNAPSHOT \
+  -Dsources=scalafx-1.0-SNAPSHOT-sources.jar

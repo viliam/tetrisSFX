@@ -5,11 +5,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>sk.kave</groupId>
-    <artifactId>tank</artifactId>
+    <artifactId>kave</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <name>tank</name>
     <url>http://maven.apache.org</url>
+
+    <properties>
+        <scala.version>2.9.0</scala.version>
+        <jfx-sdk>c:\Program Files\Oracle\JavaFX 2.1 SDK\</jfx-sdk>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -22,13 +27,13 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>2.9.0</version>
+            <version>${scala.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-compiler</artifactId>
-            <version>2.9.0</version>
+            <version>${scala.version}</version>
         </dependency>
 
 
@@ -37,6 +42,21 @@
             <artifactId>scalafx</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.scalafx</groupId>
+            <artifactId>scalafx</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javafx</groupId>
+            <artifactId>javafx</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${jfx-sdk}/rt/lib/jfxrt.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -62,19 +82,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <scalaVersion>2.9.0</scalaVersion>
-                    <sendJavaToScalac>true</sendJavaToScalac>
-                    <args>
-                        <arg>-target:jvm-1.5</arg>
-                        <arg>-g:vars</arg>
-                        <arg>-deprecation</arg>
-                        <arg>-dependencyfile</arg>
-                        <arg>${project.build.directory}/.scala_dependencies</arg>
-                    </args>
+                    <scalaVersion>${scala.version}</scalaVersion>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 
 </project>
