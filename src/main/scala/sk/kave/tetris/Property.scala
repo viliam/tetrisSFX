@@ -2,8 +2,8 @@ package sk.kave.tetris
 
 object Property {
 
-  val MaxX = 20
-  val MaxY = 50
+  val Rows = 20
+  val Cols = 50
 
   val ItemSize = 20
 }

@@ -1,8 +1,13 @@
 package sk.kave
 
-object MainHelloScala {
+import scalafx.application.JFXApp
+import tetris.Board
+import tetris.fx.BoardStage
 
-  def main( args : Array[String]) {
-      println("Hello scala")
-  }
+object MainHelloScala extends JFXApp {
+
+  implicit val board = new Board
+
+  stage = new BoardStage
+
 }

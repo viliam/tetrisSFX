@@ -7,10 +7,8 @@ import scalafx.scene.Scene
 
 object TetrisApp extends JFXApp {
 
-
-
   stage = new Stage {
-     scene = new Scene( MaxX * ItemSize, MaxY * ItemSize )
+    scene = new Scene(Rows * ItemSize, Cols * ItemSize)
 
   }
 
