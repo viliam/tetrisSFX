@@ -10,49 +10,55 @@ import sk.kave.tetris.Property._
 @RunWith(classOf[JUnitRunner])
 class BoardTest extends FlatSpec with ShouldMatchers {
 
-  val testFrozenItem = Array( Array(false, false, false),
-                              Array(false, false, true),
-                              Array(true,  true,  true),
-                              Array(false, true,  true))
-
-  val board : Board = new Board( deepCopy (testFrozenItem) )
+  val testFrozenItem = Array( Array(false, false, true, false),
+                              Array(false, true,  true, true),
+                              Array(false, true,  true, false))
 
   def deepCopy(a : Array[Array[Boolean]]) : Array[Array[Boolean]] = {
-//    val b = new Array[Array[Boolean]] (a.length)
-//    b =
       for (row <- a) yield for ( item <- row) yield item
-        // b(i) = new Array[Boolean](a(i).length)
-//         j <- 0 until a(i).length )  {
-//       b(i)(j) = a(i)(j)
-//    }
-//    b
   }
 
-  "A Board" should " recognize if row is full" in {
+  "A Board" should " initialized corretly" in {
+    val board : Board = new Board( deepCopy (testFrozenItem) )
+
+    assert( board.frozenItems.length == 3)
+    for (col <- board.frozenItems)
+      assert( col.length == 4)
+  }
+
+  it should " recognize if row is full" in {
+    val board : Board = new Board( deepCopy (testFrozenItem) )
+
     assert( !board.isFullRow( 0) )
     assert( board.isFullRow( 2))
   }
 
   it should " be able clear full row " in {
+    val board : Board = new Board( deepCopy (testFrozenItem) )
+
     board.clearRow(2)
-    assert( testFrozenItem(3) == board.frozenItems(2))
-    assert( board.frozenItems(3).forall( _ == false))
+
+    for (col <- board.frozenItems)  //clear last row
+      assert( col(3) == false)
+
+    for (i <- 1 until board.frozenItems.length)
+      assert( testFrozenItem(i)(3) == board.frozenItems(i)(2))
+  }
+
+  it should " recognize if item is free" in {
+    val board : Board = new Board( deepCopy (testFrozenItem) )
+
+    assert( board.isFreeItem( (0,0)) == true)
+    assert( board.isFreeItem( (0,2)) == false)
   }
 
   it should " throw an AssertionError if trying clear not full row" in {
+    val board : Board = new Board( deepCopy (testFrozenItem) )
 
     evaluating {
       board.clearRow( 0)
     } should produce [AssertionError]
   }
+
+
 }
-
-
-//class FadeTransitionSpec extends FlatSpec with PropertyComparator {
-// "A FadeTransition" should "implement all the JavaFX properties" in {
-//   compareProperties(classOf[jfxa.FadeTransition], classOf[FadeTransition])
-// }
-//
-// it should "implement all the JavaFX builder properties" in {
-//   compareBuilderProperties(classOf[jfxa.FadeTransitionBuilder], classOf[FadeTransition])
-// }

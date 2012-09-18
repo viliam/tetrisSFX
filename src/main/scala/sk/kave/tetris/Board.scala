@@ -5,9 +5,9 @@ import sk.kave.tetris.Property._
 object Board {
 
   def makeFrozenItems : Array[Array[Boolean]]  = {
-    val frozenItems = new Array[Array[Boolean]] (Rows)
-    for (i <- (0 until Rows) ) {
-      frozenItems(i) = new Array[Boolean](Cols)
+    val frozenItems = new Array[Array[Boolean]] (Cols)
+    for (i <- (0 until Cols) ) {
+      frozenItems(i) = new Array[Boolean](Rows)
     }
     frozenItems
   }
@@ -21,7 +21,7 @@ class Board( val frozenItems : Array[Array[Boolean]] = Board.makeFrozenItems ) {
    * Recognize if given rull is full
    */
   def isFullRow(row: Int): Boolean =  {
-    for ( row <-  frozenItems; item <- row; if item == false )
+    for ( cols <-  frozenItems; if cols(row) == false )
       return false
     true
   }
@@ -36,17 +36,33 @@ class Board( val frozenItems : Array[Array[Boolean]] = Board.makeFrozenItems ) {
   def clearRow(row : Int) {
     assert( isFullRow( row))
 
-    val maxRow = frozenItems.length -1
-    for ( iRow <- row+1 to maxRow)
-      frozenItems (iRow-1) = frozenItems(iRow )
+    for (
+      col  <- frozenItems;
+      iRow <- row until col.length -1) {
+      col(iRow) = col(iRow+1 )
+    }
 
-    frozenItems(maxRow) = Array.fill( frozenItems(maxRow).length)( false)
+    for (col <- frozenItems) {
+      col( col.length -1) = false
+    }
   }
 
-  def isFree(x : Int, y : Int) = frozenItems(x)(y)
+  def isFreeItem(item : (Int, Int) )  = !frozenItems(item._1)( item._2)
+  def isFree(position : List [ (Int, Int) ]) =
+    position.forall( !isOut (_) ) && position.forall( isFreeItem (_) )
 
   def freeze(x: Int, y: Int)  { frozenItems(x)(y) = true }
+  def freeze( cube : Cube ) {
+     for ( (xx,yy) <- cube.position) freeze( cube.x + xx,  cube.y + yy)
+  }
 
-  def isOut(x : Int, y : Int)  = { x<0 || x>= frozenItems.length || y >= frozenItems(x).length }
+  def isOut(item : ( Int, Int) ) : Boolean  = {
+    val x = item._1
+    val y = item._2
+    x <0 || x == frozenItems.length || y >= frozenItems( x).length
+  }
+//  def isOut( cube : Cube) : Boolean = {
+//    !cube.position.forall( !isOut (_) )
+//  }
 
 }

@@ -2,13 +2,15 @@ package sk.kave.tetris
 
 import scalafx.scene.{Node, Group}
 import scalafx.beans.property.IntegerProperty
-import javafx.beans.property
+import scalafx.Includes._
+import scalafx.beans.binding.{NumberExpression, NumberBinding}
+import sk.kave.tetris.Utils._
 
 object Cube {
 
   final private[tetris] def isFree( positions : List[ (Int,Int)])(implicit board: Board) : Boolean = {
       for ( (x,y) <- positions
-            if !board.isFree( x,y) || board.isOut( x,y))
+            if !board.isFreeItem( x,y) || board.isOut( x,y))
         return false
       true
   }
@@ -18,21 +20,23 @@ object Cube {
 
 }
 class Cube (
-   val x : IntegerProperty,
-   val y :IntegerProperty = IntegerProperty(0) )
+   var x : Int,
+   var y : Int= 0 )
   (implicit val board : Board)  {
 
 
-  def position : List[ (Int, Int)] = List((0,0))
+  def position : List[ (Int, Int)] =
+    List( (0,0) )
 
+  def moveLeft() = {;}
+        //ak je volne pre kazdy poziciu x-1 (TODO: !pozor na prekryvanie sameho so sebou)
+//    if ( Cube.isFreeItem(  for ( (xx,yy) <- position) yield (xx-1, yy ))   )
+//      //posun x-vou suradnicu dolava
+//      x.set( x() - 1)
 
-  def moveLeft() =
-    if ( Cube.isFree(  for ( (x,y) <- position) yield (x-1,y))   )
-      x - 1
-
-  def moveRight() =
-    if ( Cube.isFree( for ( (x,y) <- position) yield (x+1,y)) )
-      x + 1
+  def moveRight() = {;}
+//    if ( Cube.isFreeItem( for ( (x,y) <- position) yield ( x + 1, y() )) )
+//      x + 1
 
   //TODO: def rotate()
 
@@ -41,27 +45,18 @@ class Cube (
 
 
   def isDownFree : Boolean =
-    Cube.isFree( for ( (x,y) <- position) yield (x,y+1))
-
+    Cube.isFree( for ( (xx,yy) <- position) yield ( x + xx, y + yy +1) )
 
   //TODO: def cleanFullRows()
 
   final def moveDown : Boolean =
-      if ( isDownFree ) {
-        y+1
-        true
-      } else {
-        freeze()
-        //TOOD cleanFullRows()
-        false
-      }
-
-//  class Cube2x2 extends Cube {
-//
-//    //def this( x : Int, board :Board ) =this(x, 0) ( board)
-//
-//    def position = List( (x,y), (x+1,y), (x, y+1), (x+1, y+1) )
-//
-//  }
+    if ( isDownFree ) {
+      y +=1
+      true
+    } else {
+      freeze()
+      //TOOD cleanFullRows()
+      false
+    }
 
 }

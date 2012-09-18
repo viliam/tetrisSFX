@@ -4,7 +4,7 @@ import scalafx.application.JFXApp
 import tetris.Board
 import tetris.fx.BoardStage
 
-object MainHelloScala extends JFXApp {
+object MainTetris extends JFXApp {
 
   implicit val board = new Board
 
