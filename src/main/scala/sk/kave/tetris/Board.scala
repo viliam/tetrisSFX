@@ -1,13 +1,17 @@
 package sk.kave.tetris
 
 import sk.kave.tetris.Property._
+import scalafx.beans.property.BooleanProperty
+import scalafx.beans.property.BooleanProperty._
 
 object Board {
 
-  def makeFrozenItems : Array[Array[Boolean]]  = {
-    val frozenItems = new Array[Array[Boolean]] (Cols)
+  def makeFrozenItems : Array[Array[BooleanProperty]]  = {
+    val frozenItems = new Array[Array[BooleanProperty]] (Cols)
     for (i <- (0 until Cols) ) {
-      frozenItems(i) = new Array[Boolean](Rows)
+      frozenItems(i) = new Array[BooleanProperty](Rows)
+      for ( j <- (0 until Rows))
+        frozenItems(i)(j) = false
     }
     frozenItems
   }
@@ -15,21 +19,25 @@ object Board {
 
 }
 
-class Board( val frozenItems : Array[Array[Boolean]] = Board.makeFrozenItems ) {
+class Board( val frozenItems : Array[Array[BooleanProperty]] = Board.makeFrozenItems ) {
+
+  def clear() {
+    for (i <- 0 until Rows; if ( isFullRow(i)) ) {
+        clearRow(i)
+    }
+  }
 
   /**
    * Recognize if given rull is full
    */
   def isFullRow(row: Int): Boolean =  {
-    for ( cols <-  frozenItems; if cols(row) == false )
+    for ( cols <-  frozenItems; if cols(row)() == false )
       return false
+
     true
   }
 
   /**
-   * potrebujem vsetky riadky vyssie ako row-index posunut
-   * o riadok nizsie
-   *
    * Given row will be erased. Every rows up to given row, will be
    * turning down, to fill full empty place, which create erasing row
    */
@@ -37,23 +45,23 @@ class Board( val frozenItems : Array[Array[Boolean]] = Board.makeFrozenItems ) {
     assert( isFullRow( row))
 
     for (
-      col  <- frozenItems;
-      iRow <- row until col.length -1) {
-      col(iRow) = col(iRow+1 )
+      iCol  <- 0 until frozenItems.length;
+      iRow  <- List.range( row, 1, -1)) {
+        frozenItems(iCol)(iRow).value = frozenItems(iCol)(iRow-1)()
     }
 
     for (col <- frozenItems) {
-      col( col.length -1) = false
+      col( 0).value = false
     }
   }
 
-  def isFreeItem(item : (Int, Int) )  = !frozenItems(item._1)( item._2)
+  def isFreeItem(item : (Int, Int) )  = !frozenItems(item._1)( item._2)()
   def isFree(position : List [ (Int, Int) ]) =
     position.forall( !isOut (_) ) && position.forall( isFreeItem (_) )
 
-  def freeze(x: Int, y: Int)  { frozenItems(x)(y) = true }
+  def freeze(x: Int, y: Int)  { frozenItems(x)(y).value = true }
   def freeze( cube : Cube ) {
-     for ( (xx,yy) <- cube.position) freeze( cube.x + xx,  cube.y + yy)
+     for ( (xx,yy) <- cube.position) freeze( cube.x().toInt + xx,  cube.y().toInt + yy)
   }
 
   def isOut(item : ( Int, Int) ) : Boolean  = {
