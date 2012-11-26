@@ -1,3 +1,18 @@
+/*
+ * Copyright viliam.kois@gmail.com Kois Viliam
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package sk.kave.tetris.fx
 
 import scalafx.scene.Group
@@ -21,37 +36,40 @@ import sk.kave.MainTetris
  *
 **/
 
-class CubeGroup(implicit val board : Board) extends Group {
+class CubeGroup extends Group {
 
-  val startPosition = Cols /2
-
-  val cube : Cube = new Cube2x2( DoubleProperty( startPosition) )
+  var cube : Cube =  Cube.nextCube
 
   val realX = IntegerProperty( 0)
   val realY = IntegerProperty( 0)
-  realX <== cube.x * ItemSize
-  realY <== cube.y * ItemSize
 
   var isMovingDown = false
 
   children = makeCubeBinding
 
-  def makeCubeBinding =
+  def makeCubeBinding = {
+    realX <== cube.x * ItemSize
+    realY <== cube.y * ItemSize
+
     for ((xx,yy) <- cube.position)
       yield new Rectangle {
-              width = ItemSize
-              height =ItemSize
+              width = ItemSize -2
+              height =ItemSize -2
 
-              x <== realX + (xx * Property.ItemSize)
-              y <== realY + (yy * Property.ItemSize)
+              x <== realX + (xx * Property.ItemSize) +1
+              y <== realY + (yy * Property.ItemSize) +1
 
               fill = Color.BLUE
             }
+  }
 
   def position : List[ ( Int, Int)]
       = for ( (xx,yy) <- cube.position) yield ( cube.x().toInt + xx, cube.y().toInt + yy)
 
-  def start() {
+  def makeMove() {
+    if ( !Board.isFree( for ( (xx,yy) <- position ) yield (xx, yy+1) ) )
+      newCube()
+
     new Timeline() {
       onFinished = new EventHandler[event.ActionEvent] {
         def handle(e : event.ActionEvent) {
@@ -68,20 +86,15 @@ class CubeGroup(implicit val board : Board) extends Group {
     }.play
   }
 
-  def makeMove() {
-    if ( !board.isFree( for ( (xx,yy) <- position ) yield (xx, yy+1) ) )
-      newCube()
-
-    start()
-  }
 
   def newCube() {
-    board.freeze(cube )
-    board.clear()                    //check if is full row
+    Board.freeze(cube )
+    Board.clear()                    //check if is full row
 
     children.removeAll()             //we need remove old bind cube position
 
-    cube.y.value = 0
+    cube = Cube.nextCube
+
     children = makeCubeBinding
   }
 
@@ -99,6 +112,12 @@ class CubeGroup(implicit val board : Board) extends Group {
 
   def moveRight() {
     cube.moveRight()
+  }
+
+  def rotateCube() {
+    children.removeAll()
+    cube.rotate()
+    children = makeCubeBinding
   }
 
 }

@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package sk.kave.prototyp.tetris
+package sk.kave.tetris
 
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
+import scala.actors._
+import javafx.scene.input.{KeyEvent, KeyCode}
 
-@RunWith(classOf[JUnitRunner])
-class CubeGroupTest extends FlatSpec with ShouldMatchers {
+/*
+
+This actor will be responsible for handling key event, make queue of next move for cube.
+A cube will be actor too, every time cube finsh move, ask KeyEventActor if handle next move event.
+
+ */
 
 
+object KeyEventActor extends Actor {
 
-//  "A Board" should " recognize if row is full" in {
-//      assert( !board.isFullRow( 0) )
-//      assert( board.isFullRow( 2))
-//    }
-
+   def act() {
+     react {
+       case (e : KeyEvent ) =>
+         println( "hura actujem" )
+         act()
+     }
+   }
 }

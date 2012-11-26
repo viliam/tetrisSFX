@@ -1,3 +1,18 @@
+/*
+ * Copyright viliam.kois@gmail.com Kois Viliam
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
+
 package sk.kave.tetris
 
 import sk.kave.tetris.Property._
@@ -6,20 +21,7 @@ import scalafx.beans.property.BooleanProperty._
 
 object Board {
 
-  def makeFrozenItems : Array[Array[BooleanProperty]]  = {
-    val frozenItems = new Array[Array[BooleanProperty]] (Cols)
-    for (i <- (0 until Cols) ) {
-      frozenItems(i) = new Array[BooleanProperty](Rows)
-      for ( j <- (0 until Rows))
-        frozenItems(i)(j) = false
-    }
-    frozenItems
-  }
-
-
-}
-
-class Board( val frozenItems : Array[Array[BooleanProperty]] = Board.makeFrozenItems ) {
+  val frozenItems : Array[Array[BooleanProperty]] = makeFrozenItems
 
   def clear() {
     for (i <- 0 until Rows; if ( isFullRow(i)) ) {
@@ -57,7 +59,7 @@ class Board( val frozenItems : Array[Array[BooleanProperty]] = Board.makeFrozenI
 
   def isFreeItem(item : (Int, Int) )  = !frozenItems(item._1)( item._2)()
   def isFree(position : List [ (Int, Int) ]) =
-    position.forall( !isOut (_) ) && position.forall( isFreeItem (_) )
+    position.forall( i =>  !isOut (i) && isFreeItem (i) )
 
   def freeze(x: Int, y: Int)  { frozenItems(x)(y).value = true }
   def freeze( cube : Cube ) {
@@ -65,12 +67,8 @@ class Board( val frozenItems : Array[Array[BooleanProperty]] = Board.makeFrozenI
   }
 
   def isOut(item : ( Int, Int) ) : Boolean  = {
-    val x = item._1
-    val y = item._2
+    val (x, y) = item
     x <0 || x == frozenItems.length || y >= frozenItems( x).length
   }
-//  def isOut( cube : Cube) : Boolean = {
-//    !cube.position.forall( !isOut (_) )
-//  }
 
 }

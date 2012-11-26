@@ -19,15 +19,16 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
+import sk.kave.tetris._
 
 @RunWith(classOf[JUnitRunner])
-class CubeGroupTest extends FlatSpec with ShouldMatchers {
+class PackageTest extends FlatSpec with ShouldMatchers {
 
-
-
-//  "A Board" should " recognize if row is full" in {
-//      assert( !board.isFullRow( 0) )
-//      assert( board.isFullRow( 2))
-//    }
+  "It" should " generate the right rotation lists" in {
+      val li : List[List[(Int,Int)]] = rotateList( List( (0,0)) ,2)
+      assert( li == List(
+          List( (0,0)), List( (2,0) ), List( 2,2), List( 0,2) )
+      )
+    }
 
 }
