@@ -1,4 +1,4 @@
-TANK - are you read for playing game?
+TetrisSFX - are you read for playing game?
 
 use MAVEN for building project
 
