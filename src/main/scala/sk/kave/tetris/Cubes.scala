@@ -18,7 +18,6 @@ package sk.kave.tetris
 import scalafx.beans.property.{DoubleProperty, IntegerProperty}
 import scalafx.Includes._
 import scalafx.beans.binding.{NumberExpression, NumberBinding}
-import sk.kave.tetris.Property._
 
 object Cube2x2 extends Cube  {
   override def shapes = List( List( (0,0),( 1, 0 ), (0, 1), (1, 1) ) )

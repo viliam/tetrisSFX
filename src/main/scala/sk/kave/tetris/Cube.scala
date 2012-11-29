@@ -19,11 +19,9 @@ import scalafx.scene.{Node, Group}
 import scalafx.beans.property.{DoubleProperty, IntegerProperty}
 import scalafx.Includes._
 import scalafx.beans.binding.{NumberExpression, NumberBinding}
-import sk.kave.tetris.Utils._
 import scalafx.animation.Timeline
 import javafx.event.EventHandler
 import javafx.event
-import sk.kave.tetris.Property._
 import java.util.Random
 
 object Cube {
@@ -61,40 +59,18 @@ abstract class Cube (
       rotation = nextRot
   }
 
-  def moveLeft()  : Boolean = moveHorizontal( -1)
-  def moveRight() : Boolean = moveHorizontal( 1)
-
-  private def moveHorizontal( dx : Int) : Boolean =
-    if ( !isMoving && isXfree(dx) ) {
-      isMoving = true
-      new Timeline() {
-        onFinished = new EventHandler[event.ActionEvent] {
-          def handle(e : event.ActionEvent) {
-            isMoving = false
-          }
-        }
-        keyFrames = Seq(
-          at(0 ms)         { Set( x ->  x() )},
-          at(50 ms)        { Set( x -> ( x() + dx) ) }
-        )
-      }.play
-      true
-    } else
-      false
-
   def isRotFree(rotation : Int) : Boolean = {
-    isFree(for ((xx, yy) <- shapes(rotation)) yield (x().toInt + xx , round(y()) + yy))
+    isFree(for ((xx, yy) <- shapes(rotation)) yield (x().toInt + xx , roundUp(y()) + yy))
   }
 
   def isXfree(dx: Int) : Boolean = {
-    isFree(for ((xx, yy) <- position) yield (x().toInt + xx + dx, round(y()) + yy))
+    isFree(for ((xx, yy) <- position) yield (x().toInt + xx + dx, roundUp(y()) + yy))
   }
 
   def isDownFree : Boolean =
     isFree( for ( (xx,yy) <- position) yield ( x().toInt + xx, y().toInt + yy +1) )
 
-
-  def round( x : Double) : Int =
+  private def roundUp( x : Double) : Int =
      if ( x.toInt == x) x.toInt
      else x.toInt + 1
 

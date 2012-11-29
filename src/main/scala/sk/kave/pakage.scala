@@ -16,14 +16,18 @@
 package sk.kave
 
 import scalafx.beans.property.BooleanProperty
-import tetris.Property._
 
 package object tetris {
+
+  val Rows = 30
+  val Cols = 10
+
+  val ItemSize = 20
+
 
   final private[tetris] def isFree( positions : List[ (Int,Int)]) : Boolean = {
     for ( (x,y) <- positions
         if Board.isOut( x,y) || !Board.isFreeItem( x,y) ) {
-      println ( "isn't free: " +x+ "," + y)
       return false
     }
     true

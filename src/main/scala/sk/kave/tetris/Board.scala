@@ -15,7 +15,6 @@
 
 package sk.kave.tetris
 
-import sk.kave.tetris.Property._
 import scalafx.beans.property.BooleanProperty
 import scalafx.beans.property.BooleanProperty._
 
@@ -32,16 +31,11 @@ object Board {
   /**
    * Recognize if given rull is full
    */
-  def isFullRow(row: Int): Boolean =  {
-    for ( cols <-  frozenItems; if cols(row)() == false )
-      return false
-
-    true
-  }
+  def isFullRow(row: Int): Boolean =  frozenItems.forall{ c => c(row)() == true}
 
   /**
-   * Given row will be erased. Every rows up to given row, will be
-   * turning down, to fill full empty place, which create erasing row
+   * Given row will be erased. Every row above given row, will be
+   * shifting down, to fill empty place.
    */
   def clearRow(row : Int) {
     assert( isFullRow( row))

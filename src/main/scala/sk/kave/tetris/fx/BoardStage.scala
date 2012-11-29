@@ -22,9 +22,8 @@ import scalafx.scene.shape.Rectangle
 import scalafx.stage.Stage
 
 import sk.kave.tetris._
-import sk.kave.tetris.Property._
-import scalafx.beans.property.{DoubleProperty, IntegerProperty}
 import javafx.event.EventHandler
+import javafx.stage.WindowEvent
 import javafx.scene.input.{KeyEvent, KeyCode}
 
 /**
@@ -39,8 +38,6 @@ class BoardStage extends Stage {
 
   title = "ScalaFX Tetris"
 
-  val cubeGroup = new CubeGroup
-
   val boardGroup = new Group() {
     children =
       for (
@@ -50,41 +47,46 @@ class BoardStage extends Stage {
           new Rectangle() {
             width = ItemSize -2
             height =ItemSize -2
-            x = iCol * Property.ItemSize +1
-            y = iRow * Property.ItemSize +1
+            x = iCol * ItemSize +1
+            y = iRow * ItemSize +1
 
             fill <== when ( Board.frozenItems(iCol)(iRow) ) then Color.BLUE otherwise Color.BLACK
           }
   }
 
-
+  val controlerActor = GameControlerActor.start()
 
   scene = new Scene(Cols * ItemSize , Rows * ItemSize) {
     fill = Color.BLACK
     content = List(
       boardGroup ,
-      cubeGroup
+      CubeGroup
     )
-    cubeGroup.makeMove()
 
-    val keyActor = KeyEventActor.start()
+    controlerActor ! Action.DOWN
 
     onKeyPressed = new EventHandler[KeyEvent] {
       def handle(e : KeyEvent) {
-        if ( e.getCode() == KeyCode.UP)    cubeGroup.rotateCube()
-        if ( e.getCode() == KeyCode.LEFT)  cubeGroup.moveLeft()
-        if ( e.getCode() == KeyCode.RIGHT) cubeGroup.moveRight()
-        if ( e.getCode() == KeyCode.DOWN)  cubeGroup.moveDown()
+        e.code match {
+          case( KeyCode.UP)    => controlerActor ! Action.ROT
+          case( KeyCode.LEFT)  => controlerActor ! Action.LEFT
+          case( KeyCode.RIGHT) => controlerActor ! Action.RIGHT
+          case( KeyCode.DOWN)  => controlerActor ! Action.SPEED
+          case _ => ()
+        }
       }
     }
 
     onKeyReleased = new EventHandler[KeyEvent] {
       def handle(e : KeyEvent) {
-        if ( e.getCode() == KeyCode.DOWN)  cubeGroup.stopMoveDown()
+        if ( e.getCode() == KeyCode.DOWN)  controlerActor ! Action.STOP_SPEED
       }
     }
-
-
   }
 
+  onHiding = new EventHandler[WindowEvent] {
+    def handle( e: WindowEvent) {
+      controlerActor ! Action.EXIT
+    }
+  }
 }
