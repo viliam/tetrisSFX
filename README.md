@@ -1,18 +1,18 @@
 TetrisSFX - are you ready for playing game?
 
 ------ABOUT
-This project is a show case of using scala and scalaFx. Scala is very useful to define and use DSL, I tried show it
+This project is a show case of using scala and scalaFx. Scala is very useful to define and use DSL, I have tried show it
 in this simple example.
 
 ------ARCHITECTURE
 package sk.kave.tetris
-... object Board - two dimensional array of boolean represent "frozen" item on game board
-... object Cube  - cube is represent like List of item position (x,y).
-... package scala - global property and utils method
+... object Board - two dimensional array of boolean represent "frozen" items on game board
+... object Cube  - cube is representing like List of item position (x,y).
+... package scala - global property and util methods
 
 package sk.kave.tetris.fx
-... contains fx-wrapped objects: BoardStage, CubeGroup. This layer bind tetris data-structures to javaFx graphic object
-... class GameControlActor controls event and timeLines for moving cube
+... contains fx-wrapped objects: BoardStage, CubeGroup. This layer binds tetris data-structures to javaFx graphic object
+... class GameControlActor controls events and timeLines for moving cube
 
 ------BUILD
 
