@@ -22,15 +22,6 @@ import sk.kave.tetris.{Board, Cube}
 import scalafx.beans.property.{IntegerProperty}
 import sk.kave.tetris._
 
-/**
- * Responsibility:
- * -- hold the real position of cube on the boardStage (by binding)
- * -- create fx-rectangle, which are representing cube on boardStage
- * -- handle time-line, for falling cube down
- * -- delegate moving event to cube
- *
-**/
-
 object CubeGroup extends Group {
 
   var cube : Cube =  Cube.nextCube
