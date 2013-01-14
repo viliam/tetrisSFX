@@ -23,10 +23,4 @@ To use it, you must add scalafx-1.0-SNAPSHOT.jar file manually to yours local re
 
 http://code.google.com/p/scalafx/issues/detail?id=4
 
-mvn install:install-file -DartifactId=scalafx \
-  -DgroupId=org.scalafx \
-  -Dpackaging=jar \
-  -DpomFile=scalafx-1.0-SNAPSHOT.pom \
-  -Dfile=scalafx-1.0-SNAPSHOT.jar \
-  -Dversion=1.0-SNAPSHOT \
-  -Dsources=scalafx-1.0-SNAPSHOT-sources.jar
+mvn install:install-file -DartifactId=scalafx -DgroupId=org.scalafx -Dpackaging=jar -Dfile=scalafx-1.0-SNAPSHOT.jar -Dversion=1.0-SNAPSHOT
