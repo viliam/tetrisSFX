@@ -16,6 +16,8 @@ package sk.kave.tetris.fx
 
 ------BUILD
 
+!!! I'm sorry, but actualy it isn't posible to compile this project, because scalaFx started to versioning and chage core API at same time :( I'll fix, pls be patient. 
+
 use MAVEN for building project
 
 ScalaFX project (http://code.google.com/p/scalafx/) don't have maven artifact today.
