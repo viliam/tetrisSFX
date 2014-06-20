@@ -16,11 +16,13 @@
 package sk.kave.tetris.fx
 
 import actors.Actor
-import scalafx.animation.Timeline
 import javafx.event.EventHandler
+import scala.collection.JavaConversions._
 import javafx.event.ActionEvent
-import scalafx.Includes._
 import sk.kave.tetris.Board
+import javafx.animation.{KeyValue, KeyFrame, Timeline}
+import javafx.util.Duration
+import javafx.beans.value.WritableValue
 
 /*
 
@@ -68,18 +70,19 @@ object GameControlerActor  extends Actor {
 
       if ( !isMovingHorizontal && cube.isXfree(dx) ) {
         isMovingHorizontal = true
-        new Timeline() {
-          onFinished = new EventHandler[ ActionEvent] {
-            def handle(e : ActionEvent) {
-              isMovingHorizontal = false
-            }
+        val tl = new Timeline()
+        tl.setOnFinished ( new EventHandler[ ActionEvent] {
+          def handle(e : ActionEvent) {
+            isMovingHorizontal = false
           }
+        })
 
-          keyFrames = Seq(
-            at(0 ms)         { Set( cube.x ->  cube.x() )},
-            at(50 ms)        { Set( cube.x -> ( cube.x() + dx) ) }
-          )
-        }.play
+        tl.getKeyFrames.addAll( Seq(
+        //compilator got problem with generic types, so I typed to what he want:  WritableValue[Any]
+          new KeyFrame( Duration.seconds(0),new KeyValue(cube.x.asInstanceOf[WritableValue[Any]] , cube.x.get)),
+          new KeyFrame( Duration.millis(50), new KeyValue(cube.x.asInstanceOf[WritableValue[Any]], cube.x.get+dx))
+        ))
+        tl.play
       }
   }
 
@@ -88,26 +91,24 @@ object GameControlerActor  extends Actor {
     if (!Board.isFree(for ((xx, yy) <- CubeGroup.position) yield (xx, yy + 1)))
       CubeGroup.newCube()
 
-    new Timeline() {
-      onFinished = new EventHandler[ActionEvent] {
+    val tl = new Timeline()
+    tl.setOnFinished( new EventHandler[ActionEvent] {
         def handle(e: ActionEvent) {
           self ! Action.DOWN
         }
-      }
+      })
 
-      var speedDelay = if (isSpeed) 10 ms else 200 ms
+    var speedDelay = if (isSpeed) Duration.millis(10) else Duration.millis(200)
 
-      import CubeGroup._
+    import CubeGroup._
 
-      keyFrames = Seq(
-        at(0 s) {
-          Set(cube.y -> cube.y())
-        },
-        at(speedDelay) {
-          Set(cube.y -> (cube.y() + 1))
-        }
-      )
-    }.play
+    tl.getKeyFrames.addAll( Seq(
+      //compilator got problem with generic types, so I typed to what he want:  WritableValue[Any]
+        new KeyFrame( Duration.seconds(0),new KeyValue(cube.y.asInstanceOf[WritableValue[Any]], cube.y.get)),
+        new KeyFrame( speedDelay, new KeyValue(cube.y.asInstanceOf[WritableValue[Any]], cube.y.get+1))
+      ))
+
+    tl.play
   }
 
   private def runInJFXthred( runThis : => Unit ) {

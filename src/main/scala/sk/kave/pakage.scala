@@ -15,7 +15,7 @@
 
 package sk.kave
 
-import scalafx.beans.property.BooleanProperty
+import javafx.beans.property.{SimpleBooleanProperty, BooleanProperty}
 
 package object tetris {
 
@@ -38,7 +38,7 @@ package object tetris {
       for (i <- (0 until Cols) ) {
         frozenItems(i) = new Array[BooleanProperty](Rows)
         for ( j <- (0 until Rows))
-          frozenItems(i)(j) = false
+          frozenItems(i)(j) = new SimpleBooleanProperty(false)
       }
       frozenItems
     }

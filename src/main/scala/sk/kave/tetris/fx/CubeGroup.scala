@@ -15,58 +15,65 @@
 
 package sk.kave.tetris.fx
 
-import scalafx.scene.Group
-import scalafx.scene.shape.Rectangle
-import scalafx.scene.paint.Color
 import sk.kave.tetris.{Board, Cube}
-import scalafx.beans.property.{IntegerProperty}
 import sk.kave.tetris._
+import scala.collection.JavaConversions._
+import javafx.scene.Group
+import javafx.scene.shape.Rectangle
+import javafx.scene.paint.Color
+import javafx.beans.property.SimpleIntegerProperty
 
 object CubeGroup extends Group {
 
   var cube : Cube =  Cube.nextCube
 
-  val realX = IntegerProperty( 0)
-  val realY = IntegerProperty( 0)
+//  val realX = new SimpleIntegerProperty( 0)
+//  val realY = new SimpleIntegerProperty( 0)
 
   var isMovingDown = false
 
-  children = makeCubeBinding
+  getChildren.addAll( makeCubeBinding)
 
   def makeCubeBinding = {
-    realX <== cube.x * ItemSize
-    realY <== cube.y * ItemSize
-
+//    realX.bind( cube.x multiply  ItemSize)
+//    realY.bind( cube.y multiply ItemSize)
+println("\n\n makeCubeBinding \n")
     for ((xx,yy) <- cube.position)
-      yield new Rectangle {
-              width = ItemSize -2
-              height =ItemSize -2
-
-              x <== realX + (xx * ItemSize) +1
-              y <== realY + (yy * ItemSize) +1
-
-              fill = Color.BLUE
+      yield {
+            val r = new Rectangle() {
+              setWidth ( ItemSize - 2)
+              setHeight ( ItemSize - 2)
             }
+            r.xProperty().bind( (cube.x multiply  ItemSize) .add (ItemSize*xx  ).add(1) )
+            r.yProperty().bind( (cube.y multiply  ItemSize) .add (ItemSize*yy  ).add(1) )
+println("New r =>  x = " + cube.x + " y = " + cube.y)
+            r.setFill ( Color.BLUE)
+            r
+          }
   }
 
   def position : List[ ( Int, Int)]
-      = for ( (xx,yy) <- cube.position) yield ( cube.x().toInt + xx, cube.y().toInt + yy)
+      = for ( (xx,yy) <- cube.position) yield ( cube.x.get.toInt + xx, cube.y.get.toInt + yy)
 
   def newCube() {
     Board.freeze(cube )
     Board.clear()                    //check if row is full
 
-    children.removeAll()             //we need remove old bind cube position
+//    for ( child <- getChildren) {
+//      child.asInstanceOf[Rectangle].xProperty().bind(null)
+//      child.asInstanceOf[Rectangle].yProperty().bind(null)
+//    }
+    getChildren.clear()             //we need remove old bind cube position
 
     cube = Cube.nextCube
 
-    children = makeCubeBinding
+    getChildren.addAll( makeCubeBinding)
   }
 
   def rotateCube() {
-    children.removeAll()
+    getChildren.clear()
     cube.rotate()
-    children = makeCubeBinding
+    getChildren.addAll( makeCubeBinding)
   }
 
 }

@@ -19,8 +19,6 @@ import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import sk.kave.tetris.{Cube, Board}
-import scalafx.beans.property.{DoubleProperty, IntegerProperty}
 
 @RunWith(classOf[JUnitRunner])
 class CubeTest extends FlatSpec with ShouldMatchers {

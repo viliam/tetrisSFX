@@ -15,8 +15,7 @@
 
 package sk.kave.tetris
 
-import scalafx.beans.property.BooleanProperty
-import scalafx.beans.property.BooleanProperty._
+import javafx.beans.property.BooleanProperty
 
 object Board {
 
@@ -31,7 +30,7 @@ object Board {
   /**
    * Recognize if given rull is full
    */
-  def isFullRow(row: Int): Boolean =  frozenItems.forall{ c => c(row)() == true}
+  def isFullRow(row: Int): Boolean =  frozenItems.forall{ c => c(row).get() == true}
 
   /**
    * Given row will be erased. Every row above given row, will be
@@ -43,26 +42,26 @@ object Board {
     for (
       iCol  <- 0 until frozenItems.length;
       iRow  <- List.range( row, 1, -1)) {
-        frozenItems(iCol)(iRow).value = frozenItems(iCol)(iRow-1)()
+        frozenItems(iCol)(iRow).set( frozenItems(iCol)(iRow-1).get)
     }
 
     for (col <- frozenItems) {
-      col( 0).value = false
+      col( 0).set( false)
     }
   }
 
-  def isFreeItem(item : (Int, Int) )  = !frozenItems(item._1)( item._2)()
+  def isFreeItem(item : (Int, Int) )  = !frozenItems(item._1)( item._2).get()
   def isFree(position : List [ (Int, Int) ]) =
     position.forall( i =>  !isOut (i) && isFreeItem (i) )
 
-  def freeze(x: Int, y: Int)  { frozenItems(x)(y).value = true }
+  def freeze(x: Int, y: Int)  { frozenItems(x)(y).set( true) }
   def freeze( cube : Cube ) {
-     for ( (xx,yy) <- cube.position) freeze( cube.x().toInt + xx,  cube.y().toInt + yy)
+     for ( (xx,yy) <- cube.position) freeze( cube.x.get.toInt + xx,  cube.y.get.toInt + yy)
   }
 
   def isOut(item : ( Int, Int) ) : Boolean  = {
     val (x, y) = item
-    x <0 || x == frozenItems.length || y >= frozenItems( x).length
+    x < 0 || x == frozenItems.length || y >= frozenItems( x).length
   }
 
 }

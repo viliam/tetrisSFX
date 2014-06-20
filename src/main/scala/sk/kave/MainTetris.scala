@@ -15,12 +15,28 @@
 
 package sk.kave
 
-import scalafx.application.JFXApp
 import tetris.Board
 import tetris.fx.BoardStage
+import javafx.application.Application
+import javafx.stage.Stage
 
-object MainTetris extends JFXApp {
+object MainTetris { //extends Application {
 
-  stage = new BoardStage
+//  setStage ( new BoardStage)
 
+  def main(args: Array[String]) {
+    Application.launch(classOf[AppHelper], args: _*)
+  }
+
+
+}
+
+class AppHelper extends javafx.application.Application {
+  def start(stage: javafx.stage.Stage) {
+    new BoardStage(stage)
+    stage.show()
+  }
+
+  override def stop() {
+  }
 }

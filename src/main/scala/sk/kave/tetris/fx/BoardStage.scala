@@ -15,16 +15,17 @@
 
 package sk.kave.tetris.fx
 
-import javafx.scene.paint.Color
-import scalafx.Includes._
-import scalafx.scene._
-import scalafx.scene.shape.Rectangle
-import scalafx.stage.Stage
-
 import sk.kave.tetris._
 import javafx.event.EventHandler
-import javafx.stage.WindowEvent
-import javafx.scene.input.{KeyEvent, KeyCode}
+import javafx.stage.{WindowEvent, Stage}
+import javafx.scene.{Scene, Group}
+import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
+import javafx.scene.input.{KeyCode, KeyEvent}
+import javafx.beans.binding.{Bindings, Binding}
+import javafx.beans.binding.Bindings._
+import scala.collection.JavaConversions._
+import javafx.scene.layout.StackPane
 
 /**
  * Responsibility:
@@ -34,59 +35,67 @@ import javafx.scene.input.{KeyEvent, KeyCode}
  * -- handle key-board event and delegate
  *
  */
-class BoardStage extends Stage {
+class BoardStage(val stage: Stage) {
 
-  title = "ScalaFX Tetris"
+  stage.setTitle(  "ScalaFX Tetris")
 
   val boardGroup = new Group() {
-    children =
+    getChildren().addAll(
       for (
         iCol  <- 0 until Board.frozenItems.length;
         iRow <-  0 until Board.frozenItems(iCol).length)
         yield
           new Rectangle() {
-            width = ItemSize -2
-            height =ItemSize -2
-            x = iCol * ItemSize +1
-            y = iRow * ItemSize +1
-
-            fill <== when ( Board.frozenItems(iCol)(iRow) ) then Color.BLUE otherwise Color.BLACK
+            setWidth  (ItemSize -2)
+            setHeight (ItemSize -2)
+            setX (iCol * ItemSize +1)
+            setY (iRow * ItemSize +1)
+            fillProperty().bind(
+              Bindings
+                .when( Board.frozenItems(iCol)(iRow))
+                .then( Color.BLUE)
+                .otherwise( Color.BLACK) )
           }
+    )
   }
 
   val controlerActor = GameControlerActor.start()
 
-  scene = new Scene(Cols * ItemSize , Rows * ItemSize) {
-    fill = Color.BLACK
-    content = List(
-      boardGroup ,
-      CubeGroup
-    )
+//  val root = new StackPane
+//  root.getChildren.addAll( List(
+//    boardGroup ,
+//    CubeGroup
+//  ))
+  boardGroup.getChildren.add( CubeGroup)
+  stage.setScene ( new Scene(boardGroup, Cols * ItemSize , Rows * ItemSize) {
+      setFill ( Color.BLACK )
 
-    controlerActor ! Action.DOWN
 
-    onKeyPressed = new EventHandler[KeyEvent] {
-      def handle(e : KeyEvent) {
-        e.code match {
-          case( KeyCode.UP)    => controlerActor ! Action.ROT
-          case( KeyCode.LEFT)  => controlerActor ! Action.LEFT
-          case( KeyCode.RIGHT) => controlerActor ! Action.RIGHT
-          case( KeyCode.DOWN)  => controlerActor ! Action.SPEED
-          case _ => ()
+      controlerActor ! Action.DOWN
+
+      setOnKeyPressed ( new EventHandler[KeyEvent] {
+        def handle(e : KeyEvent) {
+          e.getCode match {
+            case( KeyCode.UP)    => controlerActor ! Action.ROT
+            case( KeyCode.LEFT)  => controlerActor ! Action.LEFT
+            case( KeyCode.RIGHT) => controlerActor ! Action.RIGHT
+            case( KeyCode.DOWN)  => controlerActor ! Action.SPEED
+            case _ => ()
+          }
         }
-      }
-    }
+      })
 
-    onKeyReleased = new EventHandler[KeyEvent] {
-      def handle(e : KeyEvent) {
-        if ( e.getCode() == KeyCode.DOWN)  controlerActor ! Action.STOP_SPEED
-      }
+      setOnKeyReleased ( new EventHandler[KeyEvent] {
+        def handle(e : KeyEvent) {
+          if ( e.getCode() == KeyCode.DOWN)  controlerActor ! Action.STOP_SPEED
+        }
+      })
     }
-  }
+  )
 
-  onHiding = new EventHandler[WindowEvent] {
+  stage.setOnHiding ( new EventHandler[WindowEvent] {
     def handle( e: WindowEvent) {
       controlerActor ! Action.EXIT
     }
-  }
+  })
 }
