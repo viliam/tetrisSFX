@@ -24,8 +24,8 @@ package object tetris {
 
   val ItemSize = 20
 
-
-  final private[tetris] def isFree( positions : List[ (Int,Int)]) : Boolean = {
+  //look at position on board and decide if isn't out or if it's empty
+  final def isFree( positions : List[ (Int,Int)]) : Boolean = {
     for ( (x,y) <- positions
         if Board.isOut( x,y) || !Board.isFreeItem( x,y) ) {
       return false
@@ -33,6 +33,7 @@ package object tetris {
     true
   }
 
+  //init. method for board. create field of frozen items
   def makeFrozenItems : Array[Array[BooleanProperty]]  = {
       val frozenItems = new Array[Array[BooleanProperty]] (Cols)
       for (i <- (0 until Cols) ) {
@@ -43,6 +44,7 @@ package object tetris {
       frozenItems
     }
 
+  //make all possible rotation of matrix
   def rotateList( li : List[ (Int,Int)], size : Int ) : List[List[(Int, Int)]] ={
 
     def oneRotation( li : List[ (Int, Int)]) : List[ (Int, Int)] = {

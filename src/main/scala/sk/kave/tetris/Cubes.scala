@@ -15,6 +15,8 @@
 
 package sk.kave.tetris
 
+
+//all shapes of Cubes stored specific object Cube like immutable List of position
 object Cube2x2 extends Cube  {
   override def shapes = List( List( (0,0),( 1, 0 ), (0, 1), (1, 1) ) )
 }

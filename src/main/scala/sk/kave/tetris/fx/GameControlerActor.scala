@@ -26,8 +26,7 @@ import javafx.beans.value.WritableValue
 
 /*
 
-This actor will be responsible for handling events. This asynchronized processing of events make processing events
-synchronized.
+This actor will be responsible for handling events.
 
  */
 

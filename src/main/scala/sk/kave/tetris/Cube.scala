@@ -55,6 +55,10 @@ abstract class Cube (
       rotation = nextRot
   }
 
+  /**
+   * Helpers checking methods for free position
+   */
+
   def isRotFree(rotation : Int) : Boolean = {
     isFree(for ((xx, yy) <- shapes(rotation)) yield (x.get.toInt + xx , roundUp(y.get) + yy))
   }

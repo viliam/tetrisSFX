@@ -35,9 +35,6 @@ object CubeGroup extends Group {
   getChildren.addAll( makeCubeBinding)
 
   def makeCubeBinding = {
-//    realX.bind( cube.x multiply  ItemSize)
-//    realY.bind( cube.y multiply ItemSize)
-println("\n\n makeCubeBinding \n")
     for ((xx,yy) <- cube.position)
       yield {
             val r = new Rectangle() {
@@ -46,7 +43,7 @@ println("\n\n makeCubeBinding \n")
             }
             r.xProperty().bind( (cube.x multiply  ItemSize) .add (ItemSize*xx  ).add(1) )
             r.yProperty().bind( (cube.y multiply  ItemSize) .add (ItemSize*yy  ).add(1) )
-println("New r =>  x = " + cube.x + " y = " + cube.y)
+
             r.setFill ( Color.BLUE)
             r
           }
@@ -59,14 +56,9 @@ println("New r =>  x = " + cube.x + " y = " + cube.y)
     Board.freeze(cube )
     Board.clear()                    //check if row is full
 
-//    for ( child <- getChildren) {
-//      child.asInstanceOf[Rectangle].xProperty().bind(null)
-//      child.asInstanceOf[Rectangle].yProperty().bind(null)
-//    }
     getChildren.clear()             //we need remove old bind cube position
 
     cube = Cube.nextCube
-
     getChildren.addAll( makeCubeBinding)
   }
 

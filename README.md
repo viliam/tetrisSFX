@@ -1,8 +1,7 @@
 TetrisSFX - are you ready for playing game?
 
 ------ABOUT
-This project is a show case of using scala and scalaFx. Scala is very useful to define and use DSL, I have tried show it
-in this simple example.
+Simple engine for game tetris.
 
 ------ARCHITECTURE
 package sk.kave.tetris
@@ -14,15 +13,9 @@ package sk.kave.tetris.fx
 ... contains fx-wrapped objects: BoardStage, CubeGroup. This layer binds tetris data-structures to javaFx graphic object
 ... class GameControlActor controls events and timeLines for moving cube
 
+-----TECHNOLOGIES
+Scala & JavaFX
+
 ------BUILD
-
-!!! I'm sorry, but actualy it isn't posible to compile this project, because scalaFx started to versioning and chage core API at same time :( I'll fix, pls be patient. 
-
-use MAVEN for building project
-
-ScalaFX project (http://code.google.com/p/scalafx/) don't have maven artifact today.
-To use it, you must add scalafx-1.0-SNAPSHOT.jar file manually to yours local repository, see:
-
-http://code.google.com/p/scalafx/issues/detail?id=4
-
-mvn install:install-file -DartifactId=scalafx -DgroupId=org.scalafx -Dpackaging=jar -Dfile=scalafx-1.0-SNAPSHOT.jar -Dversion=1.0-SNAPSHOT
+Maven
+don't forget to edit on pom.xml the javafx path, for system dependency
